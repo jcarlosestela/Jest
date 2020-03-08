@@ -18,11 +18,11 @@ public struct GetRequest<QueryParam: Encodable>: Request {
     public let body: VoidParam
     public let type: HTTPMethod = .get
     
-    public init(url: String, headers: [String : String] = [:], query: QueryParam, body: VoidParam = VoidParam()) {
+    public init(url: String, headers: [String : String] = [:], query: QueryParam) {
         self.url = url
         self.headers = headers
         self.query = query
-        self.body = body
+        self.body = VoidParam()
     }
 }
 
@@ -38,6 +38,16 @@ public struct PostRequest<BodyParam: Encodable, QueryParam: Encodable>: Request 
         self.url = url
         self.headers = headers
         self.query = query
+        self.body = body
+    }
+}
+
+extension PostRequest where QueryParam == VoidParam {
+    
+    public init(url: String, headers: [String : String] = [:], body: BodyParam) {
+        self.url = url
+        self.headers = headers
+        self.query = VoidParam()
         self.body = body
     }
 }
