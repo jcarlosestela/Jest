@@ -1,10 +1,3 @@
-//
-//  RestClient.swift
-//  
-//
-//  Created by José Carlos Estela Anguita on 08/03/2020.
-//
-
 import Foundation
 
 public struct VoidParam: Encodable {
@@ -28,7 +21,6 @@ extension HTTPMethod: CustomStringConvertible {
 }
 
 public protocol RestClient {
-
     func request<BodyParam: Encodable, QueryParam: Encodable, Output: Decodable>(
         url: String,
         method: HTTPMethod,
@@ -43,7 +35,11 @@ public enum RestClientError: Error {
     case decodedError
 }
 
-public final class JestRestClient: RestClient {
+public struct JestRestClient: RestClient {
+    
+    public init() {
+        
+    }
     
     public func request<BodyParam: Encodable, QueryParam: Encodable, Output: Decodable>(
         url: String,
@@ -61,12 +57,12 @@ public final class JestRestClient: RestClient {
         print(request)
         URLSession.shared.dataTask(with: request) { data, _, error in
             print("=== Response ===")
-            guard let dataResponse = data else {
+            guard let dataResponse = data, let response = String(data: dataResponse, encoding: .utf8) else {
                 errorOutput = error
                 print(errorOutput?.localizedDescription ?? "Unknown error")
                 return
             }
-            print(String(describing: String(data: dataResponse, encoding: .utf8)))
+            print(response)
             do {
                 output = try JSONDecoder().decode(Output.self, from: dataResponse)
             } catch {

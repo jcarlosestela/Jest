@@ -1,12 +1,11 @@
-//
-//  File.swift
-//  
-//
-//  Created by José Carlos Estela Anguita on 08/03/2020.
-//
-
 import Foundation
 
 public protocol DataSource {
-    
+    associatedtype Object: Decodable
+    func does() throws -> Object
+}
+
+public protocol DataSourceCacheCapable: DataSource where Object: Encodable {
+    func save(_ value: Object) throws
+    func get() throws -> Object?
 }
