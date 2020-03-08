@@ -3,14 +3,12 @@ import Foundation
 open class NetDataSource<RequestType: Request, Output: Decodable> {
     
     let restClient: RestClient
-    let request: RequestType
     
-    public init(restClient: RestClient, request: RequestType) {
+    public init(restClient: RestClient) {
         self.restClient = restClient
-        self.request = request
     }
     
-    public func does() throws -> Output {
+    public func does(request: RequestType) throws -> Output {
         return try self.restClient.request(
             url: request.url,
             method: request.type,

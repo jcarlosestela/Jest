@@ -9,9 +9,9 @@ open class CacheDataSource<CacheManagerType: CacheManager, RequestType: Request,
     
     private let cacheManager: CacheManagerType
     
-    public init(restClient: RestClient, request: RequestType, cacheManager: CacheManagerType) {
+    public init(restClient: RestClient, cacheManager: CacheManagerType) {
         self.cacheManager = cacheManager
-        super.init(restClient: restClient, request: request)
+        super.init(restClient: restClient)
     }
     
     public func save(_ value: Output) throws {
