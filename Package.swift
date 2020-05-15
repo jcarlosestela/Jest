@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Jest",
-    platform: [
+    platforms: [
         .macOS(.v10_10),
         .iOS(.v10)
     ],
