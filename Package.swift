@@ -11,6 +11,10 @@ let package = Package(
             name: "Jest",
             targets: ["Jest"]),
     ],
+    platform: [
+        .macOS(.v10_10),
+        .iOS(.v10)
+    ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
