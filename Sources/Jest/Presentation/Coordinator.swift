@@ -7,7 +7,6 @@
 #if canImport(UIKit)
 import UIKit
 
-@available(iOS 11, *)
 public protocol Coordinator {
     var navigationController: UINavigationController? { get set }
     func start()

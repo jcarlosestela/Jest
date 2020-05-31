@@ -1,8 +1,8 @@
 import Foundation
 
 public protocol CacheManager {
-    func save<Object>(_ value: Object) throws
-    func get<Object>() throws -> Object?
+    func save<Object: Codable>(_ value: Object) throws
+    func get<Object: Codable>() throws -> Object?
 }
 
 open class CacheDataSource<CacheManagerType: CacheManager, RequestType: Request, Output: Codable>: NetDataSource<RequestType, Output> {
