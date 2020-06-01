@@ -69,6 +69,10 @@ public struct JestRestClient: RestClient {
         var errorOutput: Error?
         print("=== Request ===")
         print(request)
+        print("=== Body ===")
+        if let body = request.httpBody {
+            print(String(data: body, encoding: .utf8))
+        }
         URLSession.shared.dataTask(with: request) { data, _, error in
             print("=== Response ===")
             guard let dataResponse = data, let response = String(data: dataResponse, encoding: .utf8) else {
