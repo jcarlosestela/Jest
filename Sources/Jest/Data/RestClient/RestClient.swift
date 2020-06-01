@@ -107,7 +107,7 @@ private extension JestRestClient {
         }
     }
     
-    func urlRequest<BodyParam: Encodable, QueryParam: Encodable>(method: String, url: String, headers: [String: String], body: BodyParam, query: QueryParam) throws -> URLRequest {
+    func urlRequest<BodyParam: BodyParamEncodable, QueryParam: Encodable>(method: String, url: String, headers: [String: String], body: BodyParam, query: QueryParam) throws -> URLRequest {
         guard let url = URL(string: url) else { throw NSError() }
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         urlComponents?.queryItems = try query.queryItems()
@@ -117,7 +117,14 @@ private extension JestRestClient {
         headers.forEach {
             request.setValue($0.value, forHTTPHeaderField: $0.key)
         }
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        switch body.encoding {
+        case .json:
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        case .urlEncoded:
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        case .none:
+            break
+        }
         return request
     }
 }
