@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol Request {
-    associatedtype BodyParam: Encodable
+    associatedtype BodyParam: BodyParamEncodable
     associatedtype QueryParam: Encodable
     var url: String { get }
     var headers: [String: String] { get }
@@ -26,7 +26,7 @@ public struct GetRequest<QueryParam: Encodable>: Request {
     }
 }
 
-public struct PostRequest<BodyParam: Encodable, QueryParam: Encodable>: Request {
+public struct PostRequest<BodyParam: BodyParamEncodable, QueryParam: Encodable>: Request {
     
     public let url: String
     public let headers: [String : String]

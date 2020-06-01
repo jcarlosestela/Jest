@@ -1,7 +1,11 @@
 import Foundation
 
-public struct VoidParam: Encodable {
+public struct VoidParam: BodyParamEncodable {
     public init() {}
+    
+    public var encoding: BodyParamEncoding {
+        return .none
+    }
 }
 
 public enum HTTPMethod {
@@ -20,8 +24,18 @@ extension HTTPMethod: CustomStringConvertible {
     }
 }
 
+public enum BodyParamEncoding {
+    case json
+    case urlEncoded
+    case none
+}
+
+public protocol BodyParamEncodable: Encodable {
+    var encoding: BodyParamEncoding { get }
+}
+
 public protocol RestClient {
-    func request<BodyParam: Encodable, QueryParam: Encodable, Output: Decodable>(
+    func request<BodyParam: BodyParamEncodable, QueryParam: Encodable, Output: Decodable>(
         url: String,
         method: HTTPMethod,
         headers: [String: String],
@@ -41,7 +55,7 @@ public struct JestRestClient: RestClient {
         
     }
     
-    public func request<BodyParam: Encodable, QueryParam: Encodable, Output: Decodable>(
+    public func request<BodyParam: BodyParamEncodable, QueryParam: Encodable, Output: Decodable>(
         url: String,
         method: HTTPMethod,
         headers: [String: String],
@@ -49,9 +63,7 @@ public struct JestRestClient: RestClient {
         body: BodyParam
     ) throws -> Output {
         var request = try self.urlRequest(method: method.description, url: url, headers: headers, body: body, query: query)
-        if !(body is VoidParam) {
-            request.httpBody = try JSONEncoder().encode(body)
-        }
+        request.httpBody = try getBody(for: body)
         let semaphore = DispatchSemaphore(value: 0)
         var output: Output?
         var errorOutput: Error?
@@ -80,6 +92,17 @@ public struct JestRestClient: RestClient {
 
 private extension JestRestClient {
     
+    func getBody<BodyParam: BodyParamEncodable>(for bodyParam: BodyParam) throws -> Data? {
+        switch bodyParam.encoding {
+        case .json:
+            return try JSONEncoder().encode(bodyParam)
+        case .urlEncoded:
+            return try bodyParam.encodingString()?.data(using: .utf8)
+        case .none:
+            return nil
+        }
+    }
+    
     func urlRequest<BodyParam: Encodable, QueryParam: Encodable>(method: String, url: String, headers: [String: String], body: BodyParam, query: QueryParam) throws -> URLRequest {
         guard let url = URL(string: url) else { throw NSError() }
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -96,6 +119,20 @@ private extension JestRestClient {
 }
 
 private extension Encodable {
+    
+    func encodingString() throws -> String? {
+        let data = try JSONEncoder().encode(self)
+        guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any], dictionary.keys.count > 0 else {
+            return nil
+        }
+        let allValues: [String] = dictionary.compactMap {
+            guard let stringParam = $0.value as? String else { return nil }
+            return stringParam
+        }
+        return allValues.reduce(into: "&") { current, next in
+            current += "&" + next
+        }
+    }
     
     func queryItems() throws -> [URLQueryItem]? {
         let data = try JSONEncoder().encode(self)
