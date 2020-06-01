@@ -97,7 +97,7 @@ private extension JestRestClient {
         case .json:
             return try JSONEncoder().encode(bodyParam)
         case .urlEncoded:
-            return try bodyParam.encodingString()?.data(using: .utf8)
+            return try bodyParam.encodingString().data(using: .utf8)
         case .none:
             return nil
         }
@@ -120,17 +120,19 @@ private extension JestRestClient {
 
 private extension Encodable {
     
-    func encodingString() throws -> String? {
+    func encodingString() throws -> String {
         let data = try JSONEncoder().encode(self)
         guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any], dictionary.keys.count > 0 else {
-            return nil
+            return ""
         }
-        let allValues: [String] = dictionary.compactMap {
-            guard let stringParam = $0.value as? String else { return nil }
-            return stringParam
-        }
-        return allValues.reduce(into: "&") { current, next in
-            current += "&" + next
+        return dictionary.enumerated().reduce(into: "?") { current, next in
+            guard let value = next.element.value as? String else { return }
+            switch next.offset {
+            case 0:
+                current += next.element.key + "=" + value
+            default:
+                current += "&" + next.element.key + "=" + value
+            }
         }
     }
     
