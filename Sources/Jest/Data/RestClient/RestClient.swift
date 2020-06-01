@@ -136,7 +136,7 @@ private extension Encodable {
         guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any], dictionary.keys.count > 0 else {
             return ""
         }
-        return dictionary.enumerated().reduce(into: "?") { current, next in
+        return dictionary.enumerated().reduce(into: "") { current, next in
             guard let value = next.element.value as? String else { return }
             switch next.offset {
             case 0:
