@@ -49,7 +49,9 @@ public struct JestRestClient: RestClient {
         body: BodyParam
     ) throws -> Output {
         var request = try self.urlRequest(method: method.description, url: url, headers: headers, body: body, query: query)
-        request.httpBody = try JSONEncoder().encode(body)
+        if !(body is VoidParam) {
+            request.httpBody = try JSONEncoder().encode(body)
+        }
         let semaphore = DispatchSemaphore(value: 0)
         var output: Output?
         var errorOutput: Error?
