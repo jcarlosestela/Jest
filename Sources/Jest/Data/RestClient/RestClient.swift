@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Empty: BodyParamEncodable {
+public struct Empty: BodyParamEncodable, Decodable {
     
     public init() {}
     

@@ -7,6 +7,10 @@
 
 import Foundation
 
+
+#if canImport(UserNotifications)
+import UserNotifications
+
 public protocol NotificationsManagerProtocol: UNUserNotificationCenterDelegate {
     associatedtype Handler
     var handler: Handler? { get set }
@@ -17,3 +21,4 @@ public protocol NotificationsManagerProtocol: UNUserNotificationCenterDelegate {
 public protocol NotificationsHandler: class {
     func handleNotification(withUserInfo userInfo: [AnyHashable: Any])
 }
+#endif
