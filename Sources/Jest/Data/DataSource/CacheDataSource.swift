@@ -18,11 +18,11 @@ open class CacheRequestDataSource<RequestType: Request, Output: Codable>: NetDat
     }
 }
 
-open class CacheDataSource<CacheManagerType: CacheManager, Object: Codable> {
+open class CacheDataSource<Object: Codable> {
     
-    public let cacheManager: CacheManagerType
+    public let cacheManager: CacheManager
     
-    public init(cacheManager: CacheManagerType) {
+    public init(cacheManager: CacheManager) {
         self.cacheManager = cacheManager
     }
     
