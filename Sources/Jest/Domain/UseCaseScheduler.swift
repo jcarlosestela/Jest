@@ -9,9 +9,15 @@ import Foundation
 
 public protocol UseCaseScheduler {
     func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input, completion: @escaping (Result<UseCaseType.Output, Error>) -> Void)
+    func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input)
 }
 
 extension DispatchQueue: UseCaseScheduler {
+    
+    
+    public func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input) {
+        self.schedule(useCase, input: input, completion: { _ in })
+    }
     
     public func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input, completion: @escaping (Result<UseCaseType.Output, Error>) -> Void) {
         async {

@@ -11,12 +11,20 @@ extension UseCase {
     public func schedule(on scheduler: UseCaseScheduler, input: Input, completion: @escaping (Result<Output, Error>) -> Void) {
         scheduler.schedule(self, input: input, completion: completion)
     }
+    
+    public func schedule(on scheduler: UseCaseScheduler, input: Input) {
+        scheduler.schedule(self, input: input)
+    }
 }
 
 extension UseCase where Input == Empty {
 
     public func schedule(on scheduler: UseCaseScheduler, completion: @escaping (Result<Output, Error>) -> Void) {
         scheduler.schedule(self, input: Empty(), completion: completion)
+    }
+    
+    public func schedule(on scheduler: UseCaseScheduler) {
+        scheduler.schedule(self, input: Empty())
     }
 }
 
