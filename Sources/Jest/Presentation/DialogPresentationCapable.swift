@@ -7,10 +7,10 @@
 
 public struct DialogAction {
     
-    let title: String
-    let action: (() -> Void)?
+    public let title: String
+    public let action: (() -> Void)?
     
-    init(title: String, action: (() -> Void)? = nil) {
+    public init(title: String, action: (() -> Void)? = nil) {
         self.title = title
         self.action = action
     }
