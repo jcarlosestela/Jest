@@ -12,20 +12,19 @@ public protocol CacheManager {
     func get<Object: Codable>() throws -> Object?
 }
 
-public protocol CacheDataSourceCapable {
-    associatedtype Object: Codable
-    associatedtype Manager: CacheManager
-    var cacheManager: Manager { get }
+protocol CacheDataSourceCapable {
+    func save<Object: Codable>(_ value: Object, on cacheManager: CacheManager) throws
+    func get<Object: Codable>(on cacheManager: CacheManager) throws -> Object?
 }
 
 extension CacheDataSourceCapable {
     
-    public func save(_ value: Object) throws {
-        try self.cacheManager.save(value)
+    func save<Object: Codable>(_ value: Object, on cacheManager: CacheManager) throws {
+        try cacheManager.save(value)
     }
     
-    public func get() throws -> Object? {
-        return try self.cacheManager.get()
+    func get<Object: Codable>(on cacheManager: CacheManager) throws -> Object? {
+        try cacheManager.get()
     }
 }
 

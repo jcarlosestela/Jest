@@ -1,21 +1,24 @@
 import Foundation
 
-open class CacheRequestDataSource<CacheManagerType: CacheManager, RequestType: Request, Output: Codable>: NetDataSource<RequestType, Output> {
+open class CacheRequestDataSource<RequestType: Request, Output: Codable>: NetDataSource<RequestType, Output> {
     
-    public let cacheManager: CacheManagerType
+    public let cacheManager: CacheManager
     
-    public init(restClient: RestClient, cacheManager: CacheManagerType) {
+    public init(restClient: RestClient, cacheManager: CacheManager) {
         self.cacheManager = cacheManager
         super.init(restClient: restClient)
     }
+    
+    public func save(_ value: Object) throws {
+        try self.cacheManager.save(value)
+    }
+    
+    public func get() throws -> Object? {
+        return try self.cacheManager.get()
+    }
 }
 
-extension CacheRequestDataSource: CacheDataSourceCapable {
-    public typealias Object = Output
-    public typealias Manager = CacheManagerType
-}
-
-open class CacheDataSource<CacheManagerType: CacheManager, Object: Codable>: CacheDataSourceCapable {
+open class CacheDataSource<CacheManagerType: CacheManager, Object: Codable> {
     
     public let cacheManager: CacheManagerType
     
