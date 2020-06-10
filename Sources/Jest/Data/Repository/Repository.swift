@@ -13,7 +13,7 @@ extension Repository where DS: DataSource {
     }
 }
 
-extension Repository where DS: DataSourceCacheCapable {
+extension Repository where DS: CacheDataSourceCapable {
     
     public func get(request: DS.RequestType) throws -> DS.Object {
         guard let cached = try self.dataSource.get() else {

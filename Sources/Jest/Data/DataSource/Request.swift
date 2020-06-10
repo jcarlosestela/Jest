@@ -15,14 +15,14 @@ public struct GetRequest<QueryParam: Encodable>: Request {
     public let url: String
     public let headers: [String : String]
     public let query: QueryParam
-    public let body: VoidParam
+    public let body: Empty
     public let type: HTTPMethod = .get
     
     public init(url: String, headers: [String : String] = [:], query: QueryParam) {
         self.url = url
         self.headers = headers
         self.query = query
-        self.body = VoidParam()
+        self.body = Empty()
     }
 }
 
@@ -42,12 +42,12 @@ public struct PostRequest<BodyParam: BodyParamEncodable, QueryParam: Encodable>:
     }
 }
 
-extension PostRequest where QueryParam == VoidParam {
+extension PostRequest where QueryParam == Empty {
     
     public init(url: String, headers: [String : String] = [:], body: BodyParam) {
         self.url = url
         self.headers = headers
-        self.query = VoidParam()
+        self.query = Empty()
         self.body = body
     }
 }

@@ -27,6 +27,13 @@ public extension DialogPresentationCapable where Self: UIViewController {
     
     func showDialog(title: String, description: String?, accept: DialogAction?, cancel: DialogAction?) {
         let alert = UIAlertController(title: title, message: description, preferredStyle: .alert)
+        let acceptAction = accept.map { action in
+            UIAlertAction(title: action.title, style: .default, handler: { _ in action.action?() })
+        }
+        let cancelAction = cancel.map { action in
+            UIAlertAction(title: action.title, style: .cancel, handler: { _ in action.action?() })
+        }
+        [acceptAction, cancelAction].compactMap({ $0 }).forEach(alert.addAction)
         self.present(alert, animated: true, completion: nil)
     }
 }

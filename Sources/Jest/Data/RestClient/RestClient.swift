@@ -1,6 +1,7 @@
 import Foundation
 
-public struct VoidParam: BodyParamEncodable {
+public struct Empty: BodyParamEncodable {
+    
     public init() {}
     
     public var encoding: BodyParamEncoding {
