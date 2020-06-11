@@ -6,18 +6,6 @@ public protocol UseCase {
     func does(_ input: Input) throws -> Output
 }
 
-extension UseCase where Input == Empty {
-    func does() throws -> Output {
-        try self.does(Empty())
-    }
-}
-
-extension UseCase where Input == Empty, Output == Empty {
-    func does() throws {
-        _ = try self.does(Empty())
-    }
-}
-
 extension UseCase {
     
     private var defaultScheduler: UseCaseScheduler {
