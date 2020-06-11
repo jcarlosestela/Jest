@@ -2,13 +2,19 @@ import Foundation
 
 public protocol UseCase {
     associatedtype Input: Encodable
-    associatedtype Output
+    associatedtype Output: Decodable
     func does(_ input: Input) throws -> Output
 }
 
 extension UseCase where Input == Empty {
     func does() throws -> Output {
         try self.does(Empty())
+    }
+}
+
+extension UseCase where Input == Empty, Output == Empty {
+    func does() throws {
+        _ = try self.does(Empty())
     }
 }
 
