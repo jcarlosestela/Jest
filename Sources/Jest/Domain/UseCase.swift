@@ -8,45 +8,57 @@ public protocol UseCase {
 
 extension UseCase {
     
-    public func schedule(on scheduler: UseCaseScheduler, input: Input, completion: @escaping (Result<Output, Error>) -> Void) {
-        scheduler.schedule(self, input: input, completion: completion)
+    private var defaultScheduler: UseCaseScheduler {
+        return DispatchQueue.global()
     }
     
-    public func schedule(on scheduler: UseCaseScheduler, input: Input) {
-        scheduler.schedule(self, input: input)
+    public func schedule(with input: Input, completion: ((Result<Output, Error>) -> Void)? = nil) {
+        defaultScheduler.schedule(self, input: input, completion: completion)
+    }
+    
+    public func schedule(on scheduler: UseCaseScheduler, input: Input, completion: ((Result<Output, Error>) -> Void)? = nil) {
+        scheduler.schedule(self, input: input, completion: completion)
     }
 }
 
 extension UseCase where Input == Empty {
-
-    public func schedule(on scheduler: UseCaseScheduler, completion: @escaping (Result<Output, Error>) -> Void) {
-        scheduler.schedule(self, input: Empty(), completion: completion)
-    }
     
-    public func schedule(on scheduler: UseCaseScheduler) {
-        scheduler.schedule(self, input: Empty())
+    public func schedule(completion: ((Result<Output, Error>) -> Void)? = nil) {
+        defaultScheduler.schedule(self, input: Empty(), completion: completion)
+    }
+
+    public func schedule(on scheduler: UseCaseScheduler, completion: ((Result<Output, Error>) -> Void)? = nil) {
+        scheduler.schedule(self, input: Empty(), completion: completion)
     }
 }
 
 extension UseCase where Output == Empty {
 
-    public func schedule(on scheduler: UseCaseScheduler, input: Input, completion: @escaping (Error?) -> Void) {
+    public func schedule(with input: Input, completion: (() -> Void)? = nil) {
+        self.schedule(on: defaultScheduler, input: input, completion: completion)
+     }
+    
+    public func schedule(on scheduler: UseCaseScheduler, input: Input, completion: (() -> Void)? = nil) {
         scheduler.schedule(self, input: input) { result in
             switch result {
-            case .success: completion(nil)
-            case .failure(let error): completion(error)
+            case .success: completion?()
+            case .failure: completion?()
             }
         }
     }
 }
 
 extension UseCase where Input == Empty, Output == Empty {
+    
+    public func schedule(completion: (() -> Void)? = nil) {
+        self.schedule(on: defaultScheduler, input: Empty(), completion: completion)
+     }
 
-    public func schedule(on scheduler: UseCaseScheduler, completion: @escaping (Error?) -> Void) {
+    public func schedule(on scheduler: UseCaseScheduler, completion: (() -> Void)? = nil) {
         scheduler.schedule(self, input: Empty()) { result in
             switch result {
-            case .success: completion(nil)
-            case .failure(let error): completion(error)
+            case .success: completion?()
+            case .failure: completion?()
             }
         }
     }

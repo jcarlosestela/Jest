@@ -8,24 +8,22 @@
 import Foundation
 
 public protocol UseCaseScheduler {
-    func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input, completion: @escaping (Result<UseCaseType.Output, Error>) -> Void)
-    func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input)
+    func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input, completion: ((Result<UseCaseType.Output, Error>) -> Void)?)
 }
 
 extension DispatchQueue: UseCaseScheduler {
     
-    
-    public func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input) {
-        self.schedule(useCase, input: input, completion: { _ in })
-    }
-    
-    public func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input, completion: @escaping (Result<UseCaseType.Output, Error>) -> Void) {
+    public func schedule<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input, completion: ((Result<UseCaseType.Output, Error>) -> Void)?) {
         async {
             do {
                 let result = try useCase.does(input)
-                completion(.success(result))
+                DispatchQueue.main.async {
+                    completion?(.success(result))
+                }
             } catch {
-                completion(.failure(error))
+                DispatchQueue.main.async {
+                    completion?(.failure(error))
+                }
             }
         }
     }
