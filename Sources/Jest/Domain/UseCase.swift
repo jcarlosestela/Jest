@@ -2,7 +2,7 @@ import Foundation
 
 public protocol UseCase {
     associatedtype Input: Encodable
-    associatedtype Output: Decodable
+    associatedtype Output
     func does(_ input: Input) throws -> Output
 }
 
