@@ -17,21 +17,6 @@ extension Empty: UseCaseOutputCheckable {
     }
 }
 
-public class UseCaseGroup {
-    
-    private let dispatchGroup: DispatchGroup
-    private let completion: () -> Void
-    
-    init(completion: @escaping () -> Void) {
-        self.dispatchGroup = DispatchGroup()
-        self.completion = completion
-    }
-    
-    public func add<UseCaseType: UseCase>(_ useCase: UseCaseType, input: UseCaseType.Input, completion: @escaping (UseCaseType.Output) -> Void) where UseCaseType.Output: UseCaseOutputCheckable {
-        
-    }
-}
-
 extension UseCase {
     
     private var defaultScheduler: UseCaseScheduler {
