@@ -6,17 +6,6 @@ public protocol UseCase {
     func does(_ input: Input) throws -> Output
 }
 
-public protocol UseCaseOutputCheckable {
-    var isValid: Bool { get }
-}
-
-extension Empty: UseCaseOutputCheckable {
-    
-    public var isValid: Bool {
-        return true
-    }
-}
-
 extension UseCase {
     
     private var defaultScheduler: UseCaseScheduler {
