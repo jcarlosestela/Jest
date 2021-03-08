@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public struct Empty: BodyParamEncodable, Decodable {
     
@@ -112,7 +115,7 @@ private extension JestRestClient {
     }
     
     func urlRequest<BodyParam: BodyParamEncodable, QueryParam: Encodable>(method: String, url: String, headers: [String: String], body: BodyParam, query: QueryParam) throws -> URLRequest {
-        guard let url = URL(string: url) else { throw NSError() }
+        guard let url = URL(string: url) else { throw NSError(domain: "", code: 0, userInfo: nil) }
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         urlComponents?.queryItems = try query.queryItems()
         guard let urlWithParams = urlComponents?.url else { return URLRequest(url: url) }
