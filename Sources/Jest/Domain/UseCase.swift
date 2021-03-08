@@ -21,7 +21,7 @@ extension UseCase {
     }
 }
 
-extension UseCase where Input == Empty {
+extension UseCase where Input == Empty { 
     
     public func schedule(completion: ((Result<Output, Error>) -> Void)? = nil) {
         defaultScheduler.schedule(self, input: Empty(), completion: completion)

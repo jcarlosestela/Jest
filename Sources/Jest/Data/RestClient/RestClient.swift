@@ -12,6 +12,7 @@ public struct Empty: BodyParamEncodable, Decodable {
 public enum HTTPMethod {
     case get
     case post
+    case delete
 }
 
 extension HTTPMethod: CustomStringConvertible {
@@ -21,6 +22,8 @@ extension HTTPMethod: CustomStringConvertible {
             return "GET"
         case .post:
             return "POST"
+        case .delete:
+            return "DELETE"
         }
     }
 }
@@ -68,20 +71,20 @@ public struct JestRestClient: RestClient {
         let semaphore = DispatchSemaphore(value: 0)
         var output: Output?
         var errorOutput: Error?
-        print("=== Request ===")
-        print(request)
-        print("=== Body ===")
+//        print("=== Request ===")
+//        print(request)
+//        print("=== Body ===")
         if let body = request.httpBody {
             print(String(data: body, encoding: .utf8))
         }
         URLSession.shared.dataTask(with: request) { data, _, error in
-            print("=== Response ===")
+//            print("=== Response ===")
             guard let dataResponse = data, let response = String(data: dataResponse, encoding: .utf8) else {
                 errorOutput = error
-                print(errorOutput?.localizedDescription ?? "Unknown error")
+//                print(errorOutput?.localizedDescription ?? "Unknown error")
                 return
             }
-            print(response)
+//            print(response)
             do {
                 output = try JSONDecoder().decode(Output.self, from: dataResponse)
             } catch {
